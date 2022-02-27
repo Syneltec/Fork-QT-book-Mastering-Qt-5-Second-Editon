@@ -11,7 +11,7 @@
 class QSqlQuery;
 class QSqlDatabase;
 
-const QString DATABASE_FILENAME = "gallery.db";
+const QString DATABASE_FILENAME = "/home/charly/Documents/DataBase-LinuxIcons/MySQLiteDB.db";
 
 class DatabaseManager
 {
