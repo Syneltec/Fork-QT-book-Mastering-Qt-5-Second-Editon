@@ -9,7 +9,13 @@ QT       -= gui
 
 TARGET = gallery-core
 TEMPLATE = lib
-CONFIG += lib c++11
+CONFIG  += c++11 lib
+DEFINES += GALLERYCORE_LIBRARY
+
+OBJECTS_DIR= ../gallery/core #Intermediate object files directory
+MOC_DIR    = ../gallery/core #Intermediate moc files directory
+RCC_DIR    = ../gallery/core #Intermediate moc files directory
+DESTDIR    = ../gallery
 
 DEFINES += GALLERYCORE_LIBRARY
 

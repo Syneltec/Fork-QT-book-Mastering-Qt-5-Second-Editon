@@ -8,6 +8,14 @@ QT       += core gui widgets
 
 TARGET = gallery-desktop
 TEMPLATE = app
+CONFIG  += c++11
+DEFINES -= GALLERYCORE_LIBRARY
+
+OBJECTS_DIR=../gallery/desktop #Intermediate object files directory
+MOC_DIR    =../gallery/desktop #Intermediate moc files directory
+RCC_DIR    =../gallery/desktop #Intermediate moc files directory
+UI_DIR     =../gallery/desktop #Intermediate moc files directory
+DESTDIR    =../gallery
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -32,12 +40,10 @@ FORMS    += MainWindow.ui \
     PictureWidget.ui \
     GalleryWidget.ui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gallery-core/release/ -lgallery-core
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gallery-core/debug/ -lgallery-core
-else:unix: LIBS += -L$$OUT_PWD/../gallery-core/ -lgallery-core
+LIBS += -L../gallery -lgallery-core
 
-INCLUDEPATH += $$PWD/../gallery-core
-DEPENDPATH += $$PWD/../gallery-core
+INCLUDEPATH += ../gallery-core
+DEPENDPATH  += ../gallery-core
 
 RESOURCES += \
     res/resource.qrc
