@@ -1,2 +1,5 @@
 /build/
 .qmake.stash
+/gallery/
+.settings/
+Makefile
