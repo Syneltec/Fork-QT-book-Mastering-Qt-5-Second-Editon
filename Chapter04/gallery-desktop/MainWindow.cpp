@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mGalleryWidget->setAlbumModel(albumModel);
     mGalleryWidget->setAlbumSelectionModel(albumSelectionModel);
 
-    PictureModel* pictureModel = new PictureModel(*albumModel, this);
+    PictureModel* pictureModel          = new PictureModel(albumModel, this);
     ThumbnailProxyModel* thumbnailModel = new ThumbnailProxyModel(this);
     thumbnailModel->setSourceModel(pictureModel);
 

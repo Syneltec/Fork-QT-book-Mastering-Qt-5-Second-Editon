@@ -18,7 +18,7 @@ UI_DIR     =../gallery/desktop #Intermediate moc files directory
 DESTDIR    =../gallery
 
 SOURCES += main.cpp\
-        MainWindow.cpp \
+    MainWindow.cpp \
     AlbumListWidget.cpp \
     AlbumWidget.cpp \
     PictureDelegate.cpp \
@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     GalleryWidget.cpp \
     ThumbnailProxyModel.cpp
 
-HEADERS  += MainWindow.h \
+HEADERS  += \
+    MainWindow.h \
     AlbumListWidget.h \
     AlbumWidget.h \
     PictureDelegate.h \
@@ -34,13 +35,17 @@ HEADERS  += MainWindow.h \
     GalleryWidget.h \
     ThumbnailProxyModel.h
 
-FORMS    += MainWindow.ui \
+FORMS += \
+    MainWindow.ui \
     AlbumListWidget.ui \
     AlbumWidget.ui \
     PictureWidget.ui \
     GalleryWidget.ui
 
-LIBS += -L../gallery -lgallery-core
+LIBS += -L../gallery
+LIBS += -L../gallery-core/
+LIBS += -L../../../gallery-core/build/gallery
+LIBS += -lgallery-core
 
 INCLUDEPATH += ../gallery-core
 DEPENDPATH  += ../gallery-core
