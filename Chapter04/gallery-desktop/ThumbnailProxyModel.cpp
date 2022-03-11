@@ -20,18 +20,34 @@ QVariant ThumbnailProxyModel::data(const QModelIndex& index, int role) const
     return *mThumbnails[filepath];
 }
 
+
 void ThumbnailProxyModel::setSourceModel(QAbstractItemModel* sourceModel)
 {
-    QIdentityProxyModel::setSourceModel(sourceModel);
-    if (!sourceModel) {
-        return;
+
+class xxx : public ThumbnailProxyModel
+{
+private:
+    ThumbnailProxyModel * ptpm;
+public:
+    xxx(ThumbnailProxyModel *p)
+    {
+        ptpm = p;
     }
+    void reset()
+    {
+        ptpm->reloadThumbnails();
+    }
+};
+    QIdentityProxyModel::setSourceModel(sourceModel);
+    if (!sourceModel) return;
 
-    connect(sourceModel, &QAbstractItemModel::modelReset, [this] {
-        reloadThumbnails();
-    });
 
-    connect(sourceModel, &QAbstractItemModel::rowsInserted, [this](const QModelIndex& parent, int first, int last) {
+
+    connect(sourceModel, &QAbstractItemModel::modelReset, this, &ThumbnailProxyModel::reloadThumbnails);
+
+    connect(sourceModel, &QAbstractItemModel::rowsInserted,
+    [this] (const QModelIndex& /*parent*/, int first, int last)
+    {
         generateThumbnails(index(first, 0), last - first + 1);
     });
 }
