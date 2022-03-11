@@ -8,10 +8,9 @@
 AlbumListWidget::AlbumListWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AlbumListWidget),
-    mAlbumModel(nullptr)
+    pAlbumModel(nullptr)
 {
     ui->setupUi(this);
-
     connect(ui->createAlbumButton, &QPushButton::clicked, this, &AlbumListWidget::createAlbum);
 }
 
@@ -22,8 +21,8 @@ AlbumListWidget::~AlbumListWidget()
 
 void AlbumListWidget::setModel(AlbumModel* model)
 {
-    mAlbumModel = model;
-    ui->albumList->setModel(mAlbumModel);
+    pAlbumModel = model;
+    ui->albumList->setModel(pAlbumModel);
 }
 
 void AlbumListWidget::setSelectionModel(QItemSelectionModel* selectionModel)
@@ -33,9 +32,7 @@ void AlbumListWidget::setSelectionModel(QItemSelectionModel* selectionModel)
 
 void AlbumListWidget::createAlbum()
 {
-    if(!mAlbumModel) {
-        return;
-    }
+    if(!pAlbumModel) return;
 
     bool ok;
     QString albumName = QInputDialog::getText(this,
@@ -45,9 +42,10 @@ void AlbumListWidget::createAlbum()
                                               "New album",
                                               &ok);
 
-    if (ok && !albumName.isEmpty()) {
-        Album album(albumName);
-        QModelIndex createdIndex = mAlbumModel->addAlbum(album);
+    if (ok && !albumName.isEmpty())
+    {
+        Album * palbum = new Album(albumName);
+        QModelIndex createdIndex = pAlbumModel->addAlbum(palbum);
         ui->albumList->setCurrentIndex(createdIndex);
     }
 }

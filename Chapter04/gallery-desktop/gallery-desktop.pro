@@ -23,18 +23,16 @@ SOURCES += main.cpp\
     AlbumWidget.cpp \
     PictureDelegate.cpp \
     PictureWidget.cpp \
-    GalleryWidget.cpp \
-    ThumbnailProxyModel.cpp
-
+    GalleryWidget.cpp 
+    
 HEADERS  += \
     MainWindow.h \
     AlbumListWidget.h \
     AlbumWidget.h \
     PictureDelegate.h \
     PictureWidget.h \
-    GalleryWidget.h \
-    ThumbnailProxyModel.h
-
+    GalleryWidget.h 
+    
 FORMS += \
     MainWindow.ui \
     AlbumListWidget.ui \

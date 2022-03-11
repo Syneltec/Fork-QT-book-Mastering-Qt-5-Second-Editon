@@ -39,12 +39,12 @@ private:
     void loadAlbum(const QModelIndex& albumIndex);
 
 private:
-    Ui::AlbumWidget* ui;
-    AlbumModel* mAlbumModel;
-    QItemSelectionModel* mAlbumSelectionModel;
+    Ui::AlbumWidget     * ui;
+    AlbumModel          * mAlbumModel;
+    QItemSelectionModel * mAlbumSelectionModel;
 
-    ThumbnailProxyModel* mPictureModel;
-    QItemSelectionModel* mPictureSelectionModel;
+    ThumbnailProxyModel * mPictureModel;
+    QItemSelectionModel * mPictureSelectionModel;
 };
 
 #endif // ALBUMWIDGET_H

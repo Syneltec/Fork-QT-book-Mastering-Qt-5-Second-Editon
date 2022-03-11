@@ -130,11 +130,14 @@ void AlbumWidget::addPictures()
                                                           "Add pictures",
                                                           QDir::homePath(),
                                                           "Picture files (*.jpg *.png)");
-    if (!filenames.isEmpty()) {
+    if (!filenames.isEmpty())
+    {
         QModelIndex lastModelIndex;
-        for (auto filename : filenames) {
-            Picture picture(filename);
-            lastModelIndex = mPictureModel->pictureModel()->addPicture(picture);
+        for (QString filename : filenames)
+        {
+            Picture * ppict = new Picture(filename);
+            PictureModel * ppictmod = mPictureModel->pictureModel();
+            lastModelIndex = ppictmod->addPicture(ppict);
         }
         lastModelIndex = mPictureModel->index(lastModelIndex.row(), 0);
         ui->thumbnailListView->setCurrentIndex(lastModelIndex);

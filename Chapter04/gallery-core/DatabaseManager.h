@@ -16,20 +16,21 @@ const QString DATABASE_FILENAME = "/home/charly/Documents/DataBase-LinuxIcons/My
 class DatabaseManager
 {
 public:
-    static void debugQuery(const QSqlQuery& query);
-
     static DatabaseManager& instance();
     ~DatabaseManager();
 
+    static void debugQuery(const QSqlQuery& query);
+
+
 protected:
-    DatabaseManager(const QString& path = DATABASE_FILENAME);
+    DatabaseManager           (const QString& path = DATABASE_FILENAME);
     DatabaseManager& operator=(const DatabaseManager& rhs);
 
 private:
-    std::unique_ptr<QSqlDatabase> mDatabase;
+    QSqlDatabase * pDataBase;
 
 public:
-    const AlbumDao albumDao;
+    const AlbumDao   albumDao;
     const PictureDao pictureDao;
 };
 

@@ -8,15 +8,15 @@
 class GALLERYCORESHARED_EXPORT Album
 {
 public:
-    explicit Album(const QString& name = "");
+    explicit Album(const QString& name = "", int id = -1);
 
-    int id() const;
-    void setId(int id);
-    QString name() const;
-    void setName(const QString& name);
+    int     getId  () const;
+    void    setId  (int id);
+    QString getName() const;
+    void    setName(const QString& name);
 
 private:
-    int mId;
+    int     mId;
     QString mName;
 };
 

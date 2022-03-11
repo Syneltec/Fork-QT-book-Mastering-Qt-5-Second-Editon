@@ -3,6 +3,7 @@
 	<name>gallery-desktop</name>
 	<comment></comment>
 	<projects>
+		<project>gallery-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

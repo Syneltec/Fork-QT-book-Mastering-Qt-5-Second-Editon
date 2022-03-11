@@ -9,15 +9,15 @@
 
 using namespace std;
 
-PictureDao::PictureDao(QSqlDatabase& database) :
-    mDatabase(database)
+PictureDao::PictureDao(QSqlDatabase * pdb) :  pDB(pdb)
 {
 }
 
 void PictureDao::init() const
 {
-    if (!mDatabase.tables().contains("pictures")) {
-        QSqlQuery query(mDatabase);
+    if (!pDB->tables().contains("pictures"))
+    {
+        QSqlQuery query(*pDB);
         query.exec(QString("CREATE TABLE pictures")
         + " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
         + "album_id INTEGER, "
@@ -26,9 +26,9 @@ void PictureDao::init() const
     }
 }
 
-void PictureDao::addPictureInAlbum(int albumId, Picture& picture) const
+void PictureDao::addPictureInAlbum(int albumId, Picture *ppict) const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare(QString("INSERT INTO pictures")
         + " (album_id, url)"
         + " VALUES ("
@@ -36,16 +36,16 @@ void PictureDao::addPictureInAlbum(int albumId, Picture& picture) const
         + ":url"
         + ")");
     query.bindValue(":album_id", albumId);
-    query.bindValue(":url", picture.fileUrl());
+    query.bindValue(":url", ppict->getFileUrl());
     query.exec();
     DatabaseManager::debugQuery(query);
-    picture.setId(query.lastInsertId().toInt());
-    picture.setAlbumId(albumId);
+    ppict->setId(query.lastInsertId().toInt());
+    ppict->setAlbumId(albumId);
 }
 
 void PictureDao::removePicture(int id) const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare("DELETE FROM pictures WHERE id = (:id)");
     query.bindValue(":id", id);
     query.exec();
@@ -54,27 +54,29 @@ void PictureDao::removePicture(int id) const
 
 void PictureDao::removePicturesForAlbum(int albumId) const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare("DELETE FROM pictures WHERE album_id = (:album_id)");
     query.bindValue(":album_id", albumId);
     query.exec();
     DatabaseManager::debugQuery(query);
 }
 
-unique_ptr<vector<unique_ptr<Picture>>> PictureDao::picturesForAlbum(int albumId) const
+QList<Picture*> * PictureDao::getPicturesForAlbum(int albumId) const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare("SELECT * FROM pictures WHERE album_id = (:album_id)");
     query.bindValue(":album_id", albumId);
     query.exec();
     DatabaseManager::debugQuery(query);
-    unique_ptr<vector<unique_ptr<Picture>>> list(new vector<unique_ptr<Picture>>());
-    while(query.next()) {
-        unique_ptr<Picture> picture(new Picture());
-        picture->setId(query.value("id").toInt());
-        picture->setAlbumId(query.value("album_id").toInt());
-        picture->setFileUrl(query.value("url").toString());
-        list->push_back(move(picture));
+
+    QList<Picture*> * ppicts = new QList<Picture*>();
+    while(query.next())
+    {
+        Picture *ppict = new Picture();
+        ppict->setId(query.value("id").toInt());
+        ppict->setAlbumId(query.value("album_id").toInt());
+        ppict->setFileUrl(query.value("url").toString());
+        ppicts->append(ppict);
     }
-    return list;
+    return ppicts;
 }

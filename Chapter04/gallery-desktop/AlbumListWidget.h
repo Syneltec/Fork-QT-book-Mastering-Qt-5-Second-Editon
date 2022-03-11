@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::AlbumListWidget* ui;
-    AlbumModel* mAlbumModel;
+    AlbumModel* pAlbumModel;
 };
 
 #endif // ALBUMLISTWIDGET_H

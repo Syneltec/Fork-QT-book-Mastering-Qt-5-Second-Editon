@@ -9,59 +9,58 @@
 
 using namespace std;
 
-AlbumDao::AlbumDao(QSqlDatabase& database) :
-    mDatabase(database)
+AlbumDao::AlbumDao(QSqlDatabase * pdb) : pDB(pdb)
 {
 }
 
 void AlbumDao::init() const
 {
-    if (!mDatabase.tables().contains("albums")) {
-        QSqlQuery query(mDatabase);
+    if (!pDB->tables().contains("albums"))
+    {
+        QSqlQuery query(*pDB);
         query.exec("CREATE TABLE albums (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
         DatabaseManager::debugQuery(query);
     }
 }
 
-void AlbumDao::addAlbum(Album& album) const
+void AlbumDao::addAlbum(Album * palbum) const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare("INSERT INTO albums (name) VALUES (:name)");
-    query.bindValue(":name", album.name());
+    query.bindValue(":name", palbum->getName());
     query.exec();
-    album.setId(query.lastInsertId().toInt());
+    palbum->setId(query.lastInsertId().toInt());
     DatabaseManager::debugQuery(query);
 }
 
-void AlbumDao::updateAlbum(const Album& album)const
+void AlbumDao::updateAlbum(const Album * palbum)const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare("UPDATE albums SET name = (:name) WHERE id = (:id)");
-    query.bindValue(":name", album.name());
-    query.bindValue(":id", album.id());
+    query.bindValue(":name", palbum->getName());
+    query.bindValue(":id"  , palbum->getId());
     query.exec();
     DatabaseManager::debugQuery(query);
 }
 
 void AlbumDao::removeAlbum(int id) const
 {
-    QSqlQuery query(mDatabase);
+    QSqlQuery query(*pDB);
     query.prepare("DELETE FROM albums WHERE id = (:id)");
     query.bindValue(":id", id);
     query.exec();
     DatabaseManager::debugQuery(query);
 }
 
-unique_ptr<vector<unique_ptr<Album>>> AlbumDao::albums() const
+QList<Album*> * AlbumDao::getAlbums() const
 {
-    QSqlQuery query("SELECT * FROM albums", mDatabase);
+    QSqlQuery query("SELECT * FROM albums", *pDB);
     query.exec();
-    unique_ptr<vector<unique_ptr<Album>>> list(new vector<unique_ptr<Album>>());
-    while(query.next()) {
-        unique_ptr<Album> album(new Album());
-        album->setId(query.value("id").toInt());
-        album->setName(query.value("name").toString());
-        list->push_back(move(album));
+    QList<Album*> * palbums = new QList<Album*>();
+    while(query.next())
+    {
+        Album * palbum = new Album(query.value("name").toString(), query.value("id").toInt());
+        palbums->append(palbum);
     }
-    return list;
+    return palbums;
 }

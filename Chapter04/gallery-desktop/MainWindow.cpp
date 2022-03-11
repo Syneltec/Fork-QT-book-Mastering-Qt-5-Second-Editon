@@ -13,8 +13,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mGalleryWidget(new GalleryWidget(this)),
-    mPictureWidget(new PictureWidget(this)),
+    mGalleryWidget(new GalleryWidget (this)),
+    mPictureWidget(new PictureWidget (this)),
     mStackedWidget(new QStackedWidget(this))
 {
     ui->setupUi(this);
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mGalleryWidget->setAlbumModel(albumModel);
     mGalleryWidget->setAlbumSelectionModel(albumSelectionModel);
 
-    PictureModel* pictureModel          = new PictureModel(albumModel, this);
+    PictureModel       * pictureModel   = new PictureModel(albumModel, this);
     ThumbnailProxyModel* thumbnailModel = new ThumbnailProxyModel(this);
     thumbnailModel->setSourceModel(pictureModel);
 
@@ -34,11 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mPictureWidget->setModel(thumbnailModel);
     mPictureWidget->setSelectionModel(pictureSelectionModel);
 
-    connect(mGalleryWidget, &GalleryWidget::pictureActivated,
-            this, &MainWindow::displayPicture);
-
-    connect(mPictureWidget, &PictureWidget::backToGallery,
-            this, &MainWindow::displayGallery);
+    connect(mGalleryWidget, &GalleryWidget::pictureActivated,  this, &MainWindow::displayPicture);
+    connect(mPictureWidget, &PictureWidget::backToGallery,     this, &MainWindow::displayGallery);
 
     mStackedWidget->addWidget(mGalleryWidget);
     mStackedWidget->addWidget(mPictureWidget);

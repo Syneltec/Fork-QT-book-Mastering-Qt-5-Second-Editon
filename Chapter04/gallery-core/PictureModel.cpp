@@ -8,48 +8,71 @@ using namespace std;
 
 PictureModel::PictureModel(const AlbumModel& albumModel, QObject* parent) :
     QAbstractListModel(parent),
-    mDb(DatabaseManager::instance()),
+    pDB(&DatabaseManager::instance()),
+    pPictures(new QList<Picture*>()),
     mAlbumId(-1),
-    mPictures(new vector<unique_ptr<Picture>>())
+    mPictsCount(0)
 {
-    connect(&albumModel, &AlbumModel::rowsRemoved,
-            this, &PictureModel::deletePicturesForAlbum);
+    connect(&albumModel, &AlbumModel::rowsRemoved, this, &PictureModel::deletePicturesForAlbum);
 }
 
-QModelIndex PictureModel::addPicture(const Picture& picture)
+bool PictureModel::canFetchMore(const QModelIndex &parent) const
+{
+    if (parent.isValid()) return false;
+
+    return (mPictsCount < pPictures->size());
+}
+
+void PictureModel::fetchMore(const QModelIndex &parent)
+{
+    if (parent.isValid()) return;
+
+    int remainder = pPictures->size() - mPictsCount;
+    int itemsToFetch = qMin(100, remainder);
+
+    if (itemsToFetch <= 0)  return;
+
+    beginInsertRows(QModelIndex(), mPictsCount, mPictsCount + itemsToFetch - 1);
+
+    mPictsCount += itemsToFetch;
+
+    endInsertRows();
+
+    emit numberPopulated(itemsToFetch);
+}
+
+QModelIndex PictureModel::addPicture(Picture * ppict)
 {
     int rows = rowCount();
     beginInsertRows(QModelIndex(), rows, rows);
-    unique_ptr<Picture>newPicture(new Picture(picture));
-    mDb.pictureDao.addPictureInAlbum(mAlbumId, *newPicture);
-    mPictures->push_back(move(newPicture));
+    pDB->pictureDao.addPictureInAlbum(mAlbumId, ppict);
+    pPictures->append(ppict);
     endInsertRows();
     return index(rows, 0);
 }
 
 int PictureModel::rowCount(const QModelIndex& /*parent*/) const
 {
-    return mPictures->size();
+    return pPictures->size();
 }
 
 QVariant PictureModel::data(const QModelIndex& index, int role) const
 {
-    if (!isIndexValid(index)) {
-        return QVariant();
-    }
+    if (!isIndexValid(index)) return QVariant();
 
-    const Picture& picture = *mPictures->at(index.row());
-    switch (role) {
+    Picture * ppict = pPictures->at(index.row());
+    switch (role)
+    {
         case Qt::DisplayRole:
-            return picture.fileUrl().fileName();
+            return ppict->getFileUrl().fileName();
             break;
 
         case Roles::UrlRole:
-            return picture.fileUrl();
+            return ppict->getFileUrl();
             break;
 
         case Roles::FilePathRole:
-            return picture.fileUrl().toLocalFile();
+            return ppict->getFileUrl().toLocalFile();
             break;
 
 
@@ -60,21 +83,17 @@ QVariant PictureModel::data(const QModelIndex& index, int role) const
 
 bool PictureModel::removeRows(int row, int count, const QModelIndex& parent)
 {
-    if (row < 0
-            || row >= rowCount()
-            || count < 0
-            || (row + count) > rowCount()) {
-        return false;
-    }
+    if (row < 0 || row >= rowCount() || count < 0 || (row + count) > rowCount()) return false;
 
     beginRemoveRows(parent, row, row + count - 1);
     int countLeft = count;
-    while(countLeft--) {
-        const Picture& picture = *mPictures->at(row + countLeft);
-        mDb.pictureDao.removePicture(picture.id());
+    while(countLeft--)
+    {
+        Picture * ppict = pPictures->at(row + countLeft);
+        pDB->pictureDao.removePicture(ppict->getId());
+        delete ppict;
     }
-    mPictures->erase(mPictures->begin() + row,
-                    mPictures->begin() + row + count);
+    pPictures->erase(pPictures->begin() + row, pPictures->begin() + row + count);
     endRemoveRows();
 
 
@@ -105,25 +124,18 @@ void PictureModel::clearAlbum()
 
 void PictureModel::deletePicturesForAlbum()
 {
-    mDb.pictureDao.removePicturesForAlbum(mAlbumId);
+    pDB->pictureDao.removePicturesForAlbum(mAlbumId);
     clearAlbum();
 }
 
 void PictureModel::loadPictures(int albumId)
 {
-    if (albumId <= 0) {
-        mPictures.reset(new vector<unique_ptr<Picture>>());
-        return;
-    }
-    mPictures = mDb.pictureDao.picturesForAlbum(albumId);
+    if (albumId <= 0) pPictures = new QList<Picture*>();
+    else              pPictures = pDB->pictureDao.getPicturesForAlbum(albumId);
 }
 
 bool PictureModel::isIndexValid(const QModelIndex& index) const
 {
-    if (index.row() < 0
-            || index.row() >= rowCount()
-            || !index.isValid()) {
-        return false;
-    }
-    return true;
+    if (index.row() < 0 || index.row() >= rowCount() || !index.isValid()) return false;
+    else                                                                  return true;
 }

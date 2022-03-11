@@ -2,20 +2,18 @@
 
 using namespace std;
 
-AlbumModel::AlbumModel(QObject* parent) :
-    QAbstractListModel(parent),
-    mDb(DatabaseManager::instance()),
-    mAlbums(mDb.albumDao.albums())
+AlbumModel::AlbumModel(QObject* parent) : QAbstractListModel(parent),
+                                          pDB(&DatabaseManager::instance()),
+                                          pAlbums(pDB->albumDao.getAlbums())
 {
 }
 
-QModelIndex AlbumModel::addAlbum(const Album& album)
+QModelIndex AlbumModel::addAlbum(Album * palbum)
 {
     int rowIndex = rowCount();
     beginInsertRows(QModelIndex(), rowIndex, rowIndex);
-    unique_ptr<Album> newAlbum(new Album(album));
-    mDb.albumDao.addAlbum(*newAlbum);
-    mAlbums->push_back(move(newAlbum));
+    pDB->albumDao.addAlbum(palbum);
+    pAlbums->append(palbum);
     endInsertRows();
     return index(rowIndex, 0);
 }
@@ -23,23 +21,23 @@ QModelIndex AlbumModel::addAlbum(const Album& album)
 int AlbumModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return mAlbums->size();
+    return pAlbums->size();
 }
 
 QVariant AlbumModel::data(const QModelIndex& index, int role) const
 {
-    if (!isIndexValid(index)) {
-        return QVariant();
-    }
-    const Album& album = *mAlbums->at(index.row());
+    if (!isIndexValid(index)) return QVariant();
 
-    switch (role) {
+    const Album * palbum = pAlbums->at(index.row());
+
+    switch (role)
+    {
         case Roles::IdRole:
-            return album.id();
+            return palbum->getId();
 
         case Roles::NameRole:
         case Qt::DisplayRole:
-            return album.name();
+            return palbum->getName();
 
         default:
             return QVariant();
@@ -48,33 +46,28 @@ QVariant AlbumModel::data(const QModelIndex& index, int role) const
 
 bool AlbumModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!isIndexValid(index)
-            || role != Roles::NameRole) {
-        return false;
-    }
-    Album& album = *mAlbums->at(index.row());
-    album.setName(value.toString());
-    mDb.albumDao.updateAlbum(album);
+    if (!isIndexValid(index) || role != Roles::NameRole) return false;
+
+    Album * palbum = pAlbums->at(index.row());
+    palbum->setName(value.toString());
+    pDB->albumDao.updateAlbum(palbum);
     emit dataChanged(index, index);
     return true;
 }
 
 bool AlbumModel::removeRows(int row, int count, const QModelIndex& parent)
 {
-    if (row < 0
-            || row >= rowCount()
-            || count < 0
-            || (row + count) > rowCount()) {
-        return false;
-    }
+    if (row < 0 || row >= rowCount() || count < 0 || (row + count) > rowCount()) return false;
+
     beginRemoveRows(parent, row, row + count - 1);
     int countLeft = count;
-    while (countLeft--) {
-        const Album& album = *mAlbums->at(row + countLeft);
-        mDb.albumDao.removeAlbum(album.id());
+    while (countLeft--)
+    {
+        Album * palbum = pAlbums->at(row + countLeft);
+        pDB->albumDao.removeAlbum(palbum->getId());
+        delete palbum;
     }
-    mAlbums->erase(mAlbums->begin() + row,
-                  mAlbums->begin() + row + count);
+    pAlbums->erase(pAlbums->begin() + row, pAlbums->begin() + row + count);
     endRemoveRows();
     return true;
 }
