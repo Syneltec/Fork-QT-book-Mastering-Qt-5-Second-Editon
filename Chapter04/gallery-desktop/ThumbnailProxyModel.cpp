@@ -1,17 +1,13 @@
+
 #include "ThumbnailProxyModel.h"
 
-#include "PictureModel.h"
-
-const unsigned int THUMBNAIL_SIZE = 350;
-
-ThumbnailProxyModel::ThumbnailProxyModel(QObject* parent) :
+ThumbnailProxyModel::ThumbnailProxyModel(QObject * parent) :
     QIdentityProxyModel(parent),
     mThumbnails()
 {
 }
 
-QVariant ThumbnailProxyModel::data(const QModelIndex& index, int role) const
-{
+QVariant ThumbnailProxyModel::data() const {
     if (role != Qt::DecorationRole) {
         return QIdentityProxyModel::data(index, role);
     }
@@ -20,9 +16,7 @@ QVariant ThumbnailProxyModel::data(const QModelIndex& index, int role) const
     return *mThumbnails[filepath];
 }
 
-
-void ThumbnailProxyModel::setSourceModel(QAbstractItemModel* sourceModel)
-{
+void ThumbnailProxyModel::setSourceModel() {
 
 class xxx : public ThumbnailProxyModel
 {
@@ -52,20 +46,17 @@ public:
     });
 }
 
-PictureModel* ThumbnailProxyModel::pictureModel() const
-{
+PictureModel ThumbnailProxyModel::pictureModel() const {
     return static_cast<PictureModel*>(sourceModel());
 }
 
-void ThumbnailProxyModel::reloadThumbnails()
-{
+void ThumbnailProxyModel::reloadThumbnails() {
     qDeleteAll(mThumbnails);
     mThumbnails.clear();
     generateThumbnails(index(0, 0), rowCount());
 }
 
-void ThumbnailProxyModel::generateThumbnails(const QModelIndex& startIndex, int count)
-{
+void ThumbnailProxyModel::generateThumbnails() {
     if (!startIndex.isValid()) {
         return;
     }
@@ -82,3 +73,4 @@ void ThumbnailProxyModel::generateThumbnails(const QModelIndex& startIndex, int 
         mThumbnails.insert(filepath, thumbnail);
     }
 }
+

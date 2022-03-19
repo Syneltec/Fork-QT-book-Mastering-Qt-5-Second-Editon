@@ -1,32 +1,28 @@
-#ifndef ALBUMLISTWIDGET_H
-#define ALBUMLISTWIDGET_H
+#ifndef _ALBUMLISTWIDGET_H
+#define _ALBUMLISTWIDGET_H
 
-#include <QWidget>
-#include <QItemSelectionModel>
 
-namespace Ui {
-class AlbumListWidget;
-}
+namespace Ui { class AlbumListWidget; } 
 
-class AlbumModel;
+typedef QWidget typedef1;
+class AlbumListWidget : public typedef1 {
+  Q_OBJECT
+  public:
+    explicit AlbumListWidget(QWidget * parent = 0);
 
-class AlbumListWidget : public QWidget
-{
-    Q_OBJECT
-
-public:
-    explicit AlbumListWidget(QWidget *parent = 0);
     ~AlbumListWidget();
 
-    void setModel(AlbumModel* model);
-    void setSelectionModel(QItemSelectionModel* selectionModel);
+    void setModel(AlbumModel * model);
 
-private slots:
+    void setSelectionModel(QItemSelectionModel * selectionModel);
+
+  private slots:
+  private:
     void createAlbum();
 
-private:
-    Ui::AlbumListWidget* ui;
-    AlbumModel* pAlbumModel;
-};
+    Ui::AlbumListWidget * ui;
 
-#endif // ALBUMLISTWIDGET_H
+    AlbumModel * pAlbumModel;
+
+};
+#endif

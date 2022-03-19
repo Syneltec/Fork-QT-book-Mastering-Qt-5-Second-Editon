@@ -1,10 +1,9 @@
+
 #include "PictureWidget.h"
+#include "ThumbnailProxyModel.h"
 #include "ui_PictureWidget.h"
 
-#include "PictureModel.h"
-#include "ThumbnailProxyModel.h"
-
-PictureWidget::PictureWidget(QWidget *parent) :
+PictureWidget::PictureWidget(QWidget * parent) :
     QWidget(parent),
     ui(new Ui::PictureWidget),
     mModel(nullptr),
@@ -32,18 +31,15 @@ PictureWidget::PictureWidget(QWidget *parent) :
     });
 }
 
-PictureWidget::~PictureWidget()
-{
+PictureWidget::~PictureWidget() {
     delete ui;
 }
 
-void PictureWidget::setModel(ThumbnailProxyModel* model)
-{
+void PictureWidget::setModel() {
     mModel = model;
 }
 
-void PictureWidget::setSelectionModel(QItemSelectionModel* selectionModel)
-{
+void PictureWidget::setSelectionModel() {
     mSelectionModel = selectionModel;
     if (!mSelectionModel) {
         return;
@@ -51,14 +47,18 @@ void PictureWidget::setSelectionModel(QItemSelectionModel* selectionModel)
     connect(mSelectionModel, &QItemSelectionModel::selectionChanged, this, &PictureWidget::loadPicture);
 }
 
-void PictureWidget::resizeEvent(QResizeEvent* event)
-{
+// SIGNAL 0
+
+void PictureWidget::backToGallery() {
+    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
+}
+
+void PictureWidget::resizeEvent() {
     QWidget::resizeEvent(event);
     updatePicturePixmap();
 }
 
-void PictureWidget::deletePicture()
-{
+void PictureWidget::deletePicture() {
     // Remove the current picture
     int row = mSelectionModel->currentIndex().row();
     mModel->removeRow(mSelectionModel->currentIndex().row());
@@ -80,8 +80,7 @@ void PictureWidget::deletePicture()
     emit backToGallery();
 }
 
-void PictureWidget::loadPicture(const QItemSelection& selected)
-{
+void PictureWidget::loadPicture() {
     if (selected.indexes().isEmpty()) {
         ui->nameLabel->setText("");
         ui->pictureLabel->setPixmap(QPixmap());
@@ -100,10 +99,10 @@ void PictureWidget::loadPicture(const QItemSelection& selected)
     ui->deleteButton->setEnabled(true);
 }
 
-void PictureWidget::updatePicturePixmap()
-{
+void PictureWidget::updatePicturePixmap() {
     if (mPixmap.isNull()) {
         return;
     }
     ui->pictureLabel->setPixmap(mPixmap.scaled(ui->pictureLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
+

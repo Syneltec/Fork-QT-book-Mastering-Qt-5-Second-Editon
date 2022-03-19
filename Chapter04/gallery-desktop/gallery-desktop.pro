@@ -9,7 +9,7 @@ QT       += core gui widgets
 TARGET = gallery-desktop
 TEMPLATE = app
 CONFIG  += c++11
-DEFINES -= GALLERYCORE_LIBRARY
+#DEFINES -= GALLERYCORE_LIBRARY
 
 OBJECTS_DIR=../gallery/desktop #Intermediate object files directory
 MOC_DIR    =../gallery/desktop #Intermediate moc files directory
@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     AlbumWidget.cpp \
     PictureDelegate.cpp \
     PictureWidget.cpp \
-    GalleryWidget.cpp 
+    GalleryWidget.cpp \ 
+    ThumbnailProxyModel.cpp
     
 HEADERS  += \
     MainWindow.h \
@@ -31,7 +32,8 @@ HEADERS  += \
     AlbumWidget.h \
     PictureDelegate.h \
     PictureWidget.h \
-    GalleryWidget.h 
+    GalleryWidget.h \ 
+    ThumbnailProxyModel.h
     
 FORMS += \
     MainWindow.ui \
@@ -40,10 +42,11 @@ FORMS += \
     PictureWidget.ui \
     GalleryWidget.ui
 
-LIBS += -L../gallery
-LIBS += -L../gallery-core/
-LIBS += -L../../../gallery-core/build/gallery
-LIBS += -lgallery-core
+#LIBS += -L../gallery
+#LIBS += -L../../../gallery-core/build/gallery
+LIBS += -L../gallery-core/build/gallery/ -lgallery-core
+
+#LIBS += -l../gallery-core/build/gallery/libgallery-core.so
 
 INCLUDEPATH += ../gallery-core
 DEPENDPATH  += ../gallery-core

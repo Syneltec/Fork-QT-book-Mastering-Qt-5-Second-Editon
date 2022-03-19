@@ -1,20 +1,10 @@
+
 #include "PictureDao.h"
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QVariant>
-
-#include "Picture.h"
-#include "DatabaseManager.h"
-
-using namespace std;
-
-PictureDao::PictureDao(QSqlDatabase * pdb) :  pDB(pdb)
-{
+ PictureDao::PictureDao(QSqlDatabase & pdb) {
 }
 
-void PictureDao::init() const
-{
+void PictureDao::init() const {
     if (!pDB->tables().contains("pictures"))
     {
         QSqlQuery query(*pDB);
@@ -26,8 +16,7 @@ void PictureDao::init() const
     }
 }
 
-void PictureDao::addPictureInAlbum(int albumId, Picture *ppict) const
-{
+void PictureDao::addPictureInAlbum(int albumId, Picture & ppict) const {
     QSqlQuery query(*pDB);
     query.prepare(QString("INSERT INTO pictures")
         + " (album_id, url)"
@@ -43,8 +32,7 @@ void PictureDao::addPictureInAlbum(int albumId, Picture *ppict) const
     ppict->setAlbumId(albumId);
 }
 
-void PictureDao::removePicture(int id) const
-{
+void PictureDao::removePicture(int id) const {
     QSqlQuery query(*pDB);
     query.prepare("DELETE FROM pictures WHERE id = (:id)");
     query.bindValue(":id", id);
@@ -52,8 +40,7 @@ void PictureDao::removePicture(int id) const
     DatabaseManager::debugQuery(query);
 }
 
-void PictureDao::removePicturesForAlbum(int albumId) const
-{
+void PictureDao::removePicturesForAlbum(int albumId) const {
     QSqlQuery query(*pDB);
     query.prepare("DELETE FROM pictures WHERE album_id = (:album_id)");
     query.bindValue(":album_id", albumId);
@@ -61,8 +48,7 @@ void PictureDao::removePicturesForAlbum(int albumId) const
     DatabaseManager::debugQuery(query);
 }
 
-QList<Picture*> * PictureDao::getPicturesForAlbum(int albumId) const
-{
+QList<Picture*> PictureDao::getPicturesForAlbum(int albumId) const {
     QSqlQuery query(*pDB);
     query.prepare("SELECT * FROM pictures WHERE album_id = (:album_id)");
     query.bindValue(":album_id", albumId);
@@ -80,3 +66,4 @@ QList<Picture*> * PictureDao::getPicturesForAlbum(int albumId) const
     }
     return ppicts;
 }
+

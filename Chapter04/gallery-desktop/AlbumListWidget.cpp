@@ -1,11 +1,9 @@
+
 #include "AlbumListWidget.h"
 #include "ui_AlbumListWidget.h"
 
-#include <QInputDialog>
-
-#include "AlbumModel.h"
-
-AlbumListWidget::AlbumListWidget(QWidget *parent) :
+AlbumListWidget::AlbumListWidget(QWidget * parent)
+:
     QWidget(parent),
     ui(new Ui::AlbumListWidget),
     pAlbumModel(nullptr)
@@ -14,24 +12,20 @@ AlbumListWidget::AlbumListWidget(QWidget *parent) :
     connect(ui->createAlbumButton, &QPushButton::clicked, this, &AlbumListWidget::createAlbum);
 }
 
-AlbumListWidget::~AlbumListWidget()
-{
+AlbumListWidget::~AlbumListWidget() {
     delete ui;
 }
 
-void AlbumListWidget::setModel(AlbumModel* model)
-{
+void AlbumListWidget::setModel() {
     pAlbumModel = model;
     ui->albumList->setModel(pAlbumModel);
 }
 
-void AlbumListWidget::setSelectionModel(QItemSelectionModel* selectionModel)
-{
+void AlbumListWidget::setSelectionModel() {
     ui->albumList->setSelectionModel(selectionModel);
 }
 
-void AlbumListWidget::createAlbum()
-{
+void AlbumListWidget::createAlbum() {
     if(!pAlbumModel) return;
 
     bool ok;
@@ -49,3 +43,4 @@ void AlbumListWidget::createAlbum()
         ui->albumList->setCurrentIndex(createdIndex);
     }
 }
+

@@ -1,37 +1,33 @@
-#ifndef DATABASEMANAGER_H
-#define DATABASEMANAGER_H
+#ifndef _DATABASEMANAGER_H
+#define _DATABASEMANAGER_H
 
-#include <memory>
-
-#include <QString>
 
 #include "AlbumDao.h"
 #include "PictureDao.h"
 
-class QSqlQuery;
-class QSqlDatabase;
+class DatabaseManager {
+  public:
+    static DatabaseManager instance();
 
-const QString DATABASE_FILENAME = "/home/charly/Documents/DataBase-LinuxIcons/MySQLiteDB.db";
+     ~DatabaseManager();
 
-class DatabaseManager
-{
-public:
-    static DatabaseManager& instance();
-    ~DatabaseManager();
-
-    static void debugQuery(const QSqlQuery& query);
+    static void debugQuery(const QSqlQuery & query);
 
 
-protected:
-    DatabaseManager           (const QString& path = DATABASE_FILENAME);
-    DatabaseManager& operator=(const DatabaseManager& rhs);
+  protected:
+     DatabaseManager(const QString & path = DATABASE_FILENAME);
 
-private:
-    QSqlDatabase * pDataBase;
+    DatabaseManager operator =(const DatabaseManager & rhs);
 
-public:
-    const AlbumDao   albumDao;
+
+  private:
+    QSqlDatabase pDataBase;
+
+
+  public:
+    const AlbumDao albumDao;
+
     const PictureDao pictureDao;
-};
 
-#endif // DATABASEMANAGER_H
+};
+#endif

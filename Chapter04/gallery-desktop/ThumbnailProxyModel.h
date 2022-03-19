@@ -1,30 +1,26 @@
-#ifndef THUMBNAILPROXYMODEL_H
-#define THUMBNAILPROXYMODEL_H
+#ifndef _THUMBNAILPROXYMODEL_H
+#define _THUMBNAILPROXYMODEL_H
 
-#include <QIdentityProxyModel>
-#include <QHash>
-#include <QPixmap>
 
-class PictureModel;
+typedef QIdentityProxyModel typedef4;
+class ThumbnailProxyModel : public typedef4 {
+  Q_OBJECT
+  public:
+    ThumbnailProxyModel(QObject * parent = 0);
 
-class ThumbnailProxyModel : public QIdentityProxyModel
-{
-    Q_OBJECT
+    QVariant data(const QModelIndex & index, int role) const override;
 
-public:
-    ThumbnailProxyModel(QObject* parent = 0);
+    void setSourceModel(QAbstractItemModel * sourceModel) override;
 
-    QVariant data(const QModelIndex& index, int role) const override;
-    void setSourceModel(QAbstractItemModel* sourceModel) override;
-    PictureModel* pictureModel() const;
+    PictureModel * pictureModel() const;
 
-private:
+
+  private:
     void reloadThumbnails();
-    void generateThumbnails(const QModelIndex& startIndex, int count);
 
-private:
-   QHash<QString, QPixmap*> mThumbnails;
+    void generateThumbnails(const QModelIndex & startIndex, int count);
+
+    QHash<QString, QPixmap*> mThumbnails;
 
 };
-
-#endif // THUMBNAILPROXYMODEL_H
+#endif

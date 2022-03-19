@@ -1,11 +1,17 @@
+
 #include "DatabaseManager.h"
 
-#include <QSqlDatabase>
-#include <QDebug>
-#include <QSqlError>
-#include <QSqlQuery>
+DatabaseManager DatabaseManager::instance()
+{
+    static DatabaseManager singleton;
+    return singleton;
+}
 
-void DatabaseManager::debugQuery(const QSqlQuery& query)
+ DatabaseManager::~DatabaseManager() {
+    pDataBase->close();
+}
+
+void DatabaseManager::debugQuery(const QSqlQuery & query)
 {
     if (query.lastError().type() == QSqlError::ErrorType::NoError)
     {
@@ -18,28 +24,20 @@ void DatabaseManager::debugQuery(const QSqlQuery& query)
     }
 }
 
-DatabaseManager&DatabaseManager::instance()
-{
-    static DatabaseManager singleton;
-    return singleton;
-}
-
-DatabaseManager::DatabaseManager(const QString& path) :
+ DatabaseManager::DatabaseManager(const QString & path) :
     pDataBase (new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"))),
     albumDao  (pDataBase),
     pictureDao(pDataBase)
-{
+ {
     pDataBase->setDatabaseName(path);
 
     bool openStatus = pDataBase->open();
     qDebug() << "Database connection: " << (openStatus ? "OK" : "Error");
 
-    albumDao.init();
+    albumDao  .init();
     pictureDao.init();
 }
 
-DatabaseManager::~DatabaseManager()
-{
-    pDataBase->close();
+DatabaseManager DatabaseManager::operator =(const DatabaseManager & rhs) {
 }
 

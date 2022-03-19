@@ -1,20 +1,12 @@
+
 #include "PictureDelegate.h"
 
-#include <QPainter>
-
-const unsigned int BANNER_HEIGHT = 20;
-const unsigned int BANNER_COLOR = 0x303030;
-const unsigned int BANNER_ALPHA = 200;
-const unsigned int BANNER_TEXT_COLOR = 0xffffff;
-const unsigned int HIGHLIGHT_ALPHA = 100;
-
-PictureDelegate::PictureDelegate(QObject* parent) :
+PictureDelegate::PictureDelegate(QObject * parent) :
     QStyledItemDelegate(parent)
 {
 }
 
-void PictureDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-{
+void PictureDelegate::paint() const {
     painter->save();
 
     QPixmap pixmap = index.model()->data(index, Qt::DecorationRole).value<QPixmap>();
@@ -38,8 +30,8 @@ void PictureDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
     painter->restore();
 }
 
-QSize PictureDelegate::sizeHint(const QStyleOptionViewItem& /*option*/, const QModelIndex& index) const
-{
+QSize PictureDelegate::sizeHint() const {
     const QPixmap& pixmap = index.model()->data(index, Qt::DecorationRole).value<QPixmap>();
     return pixmap.size();
 }
+

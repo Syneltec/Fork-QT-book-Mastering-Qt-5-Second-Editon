@@ -1,16 +1,9 @@
+
 #include "AlbumWidget.h"
+#include "ThumbnailProxyModel.h"
 #include "ui_AlbumWidget.h"
 
-#include <QInputDialog>
-#include <QFileDialog>
-
-#include "AlbumModel.h"
-#include "PictureModel.h"
-#include "ThumbnailProxyModel.h"
-
-#include "PictureDelegate.h"
-
-AlbumWidget::AlbumWidget(QWidget *parent) :
+AlbumWidget::AlbumWidget(QWidget * parent) :
     QWidget(parent),
     ui(new Ui::AlbumWidget),
     mAlbumModel(nullptr),
@@ -40,13 +33,11 @@ AlbumWidget::AlbumWidget(QWidget *parent) :
             this, &AlbumWidget::addPictures);
 }
 
-AlbumWidget::~AlbumWidget()
-{
+AlbumWidget::~AlbumWidget() {
     delete ui;
 }
 
-void AlbumWidget::setAlbumModel(AlbumModel* albumModel)
-{
+void AlbumWidget::setAlbumModel() {
     mAlbumModel = albumModel;
 
     connect(mAlbumModel, &QAbstractItemModel::dataChanged, [this] (const QModelIndex &topLeft) {
@@ -56,8 +47,7 @@ void AlbumWidget::setAlbumModel(AlbumModel* albumModel)
     });
 }
 
-void AlbumWidget::setAlbumSelectionModel(QItemSelectionModel* albumSelectionModel)
-{
+void AlbumWidget::setAlbumSelectionModel() {
     mAlbumSelectionModel = albumSelectionModel;
 
     connect(mAlbumSelectionModel, &QItemSelectionModel::selectionChanged, [this](const QItemSelection &selected) {
@@ -69,19 +59,23 @@ void AlbumWidget::setAlbumSelectionModel(QItemSelectionModel* albumSelectionMode
     });
 }
 
-void AlbumWidget::setPictureModel(ThumbnailProxyModel* pictureModel)
-{
+void AlbumWidget::setPictureModel() {
     mPictureModel = pictureModel;
     ui->thumbnailListView->setModel(pictureModel);
 }
 
-void AlbumWidget::setPictureSelectionModel(QItemSelectionModel* selectionModel)
-{
+void AlbumWidget::setPictureSelectionModel() {
     ui->thumbnailListView->setSelectionModel(selectionModel);
 }
 
-void AlbumWidget::deleteAlbum()
-{
+// SIGNAL 0
+
+void AlbumWidget::pictureActivated(const QModelIndex & _t1) {
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+void AlbumWidget::deleteAlbum() {
     if (mAlbumSelectionModel->selectedIndexes().isEmpty()) {
         return;
     }
@@ -103,8 +97,7 @@ void AlbumWidget::deleteAlbum()
     }
 }
 
-void AlbumWidget::editAlbum()
-{
+void AlbumWidget::editAlbum() {
     if (mAlbumSelectionModel->selectedIndexes().isEmpty()) {
         return;
     }
@@ -124,8 +117,7 @@ void AlbumWidget::editAlbum()
     }
 }
 
-void AlbumWidget::addPictures()
-{
+void AlbumWidget::addPictures() {
     QStringList filenames = QFileDialog::getOpenFileNames(this,
                                                           "Add pictures",
                                                           QDir::homePath(),
@@ -144,19 +136,18 @@ void AlbumWidget::addPictures()
     }
 }
 
-void AlbumWidget::clearUi()
-{
+void AlbumWidget::clearUi() {
     ui->albumName->setText("");
     ui->deleteButton->setVisible(false);
     ui->editButton->setVisible(false);
     ui->addPicturesButton->setVisible(false);
 }
 
-void AlbumWidget::loadAlbum(const QModelIndex& albumIndex)
-{
+void AlbumWidget::loadAlbum() {
     mPictureModel->pictureModel()->setAlbumId(mAlbumModel->data(albumIndex, AlbumModel::Roles::IdRole).toInt());
     ui->albumName->setText(mAlbumModel->data(albumIndex, Qt::DisplayRole).toString());
     ui->deleteButton->setVisible(true);
     ui->editButton->setVisible(true);
     ui->addPicturesButton->setVisible(true);
 }
+

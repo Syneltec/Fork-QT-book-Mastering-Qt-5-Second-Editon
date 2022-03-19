@@ -1,9 +1,9 @@
+
 #include "GalleryWidget.h"
+#include "ThumbnailProxyModel.h"
 #include "ui_GalleryWidget.h"
 
-#include <QItemSelectionModel>
-
-GalleryWidget::GalleryWidget(QWidget *parent) :
+GalleryWidget::GalleryWidget(QWidget * parent) :
     QWidget(parent),
     ui(new Ui::GalleryWidget)
 {
@@ -12,29 +12,32 @@ GalleryWidget::GalleryWidget(QWidget *parent) :
     connect(ui->albumWidget, &AlbumWidget::pictureActivated, this, &GalleryWidget::pictureActivated);
 }
 
-GalleryWidget::~GalleryWidget()
-{
+GalleryWidget::~GalleryWidget() {
     delete ui;
 }
 
-void GalleryWidget::setAlbumModel(AlbumModel* albumModel)
-{
+void GalleryWidget::setAlbumModel() {
     ui->albumListWidget->setModel(albumModel);
     ui->albumWidget->setAlbumModel(albumModel);
 }
 
-void GalleryWidget::setAlbumSelectionModel(QItemSelectionModel* albumSelectionModel)
-{
+void GalleryWidget::setAlbumSelectionModel() {
     ui->albumListWidget->setSelectionModel(albumSelectionModel);
     ui->albumWidget->setAlbumSelectionModel(albumSelectionModel);
 }
 
-void GalleryWidget::setPictureModel(ThumbnailProxyModel* pictureModel)
-{
+void GalleryWidget::setPictureModel() {
     ui->albumWidget->setPictureModel(pictureModel);
 }
 
-void GalleryWidget::setPictureSelectionModel(QItemSelectionModel* pictureSelectionModel)
-{
+void GalleryWidget::setPictureSelectionModel() {
     ui->albumWidget->setPictureSelectionModel(pictureSelectionModel);
 }
+
+// SIGNAL 0
+
+void GalleryWidget::pictureActivated(const QModelIndex & _t1) {
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+

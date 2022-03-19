@@ -26,22 +26,18 @@ int AlbumModel::rowCount(const QModelIndex& parent) const
 
 QVariant AlbumModel::data(const QModelIndex& index, int role) const
 {
-    if (!isIndexValid(index)) return QVariant();
+    QVariant retVal = QVariant();
+
+    if (!isIndexValid(index)) return retVal;
 
     const Album * palbum = pAlbums->at(index.row());
-
     switch (role)
     {
-        case Roles::IdRole:
-            return palbum->getId();
-
-        case Roles::NameRole:
-        case Qt::DisplayRole:
-            return palbum->getName();
-
-        default:
-            return QVariant();
+        case Roles::IdRole:     retVal = palbum->getId()  ;  break;
+        case Roles::NameRole:   retVal = palbum->getName();  break;
+        case Qt::DisplayRole:   retVal = palbum->getName();  break;
     }
+    return retVal;
 }
 
 bool AlbumModel::setData(const QModelIndex& index, const QVariant& value, int role)

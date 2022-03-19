@@ -1,37 +1,32 @@
-#ifndef GALLERYWIDGET_H
-#define GALLERYWIDGET_H
+#ifndef _GALLERYWIDGET_H
+#define _GALLERYWIDGET_H
 
-#include <QWidget>
 
-namespace Ui {
-class GalleryWidget;
-}
-
-class QItemSelectionModel;
-class AlbumModel;
-class PictureModel;
+#include "AlbumListWidget.h"
 
 class ThumbnailProxyModel;
+namespace Ui { class GalleryWidget; } 
 
-class GalleryWidget : public QWidget
-{
-    Q_OBJECT
+class GalleryWidget : public typedef1 {
+  Q_OBJECT
+  public:
+    explicit GalleryWidget(QWidget * parent = 0);
 
-public:
-    explicit GalleryWidget(QWidget *parent = 0);
     ~GalleryWidget();
 
-    void setAlbumModel(AlbumModel* albumModel);
-    void setAlbumSelectionModel(QItemSelectionModel* albumSelectionModel);
+    void setAlbumModel(AlbumModel * albumModel);
 
-    void setPictureModel(ThumbnailProxyModel* pictureModel);
-    void setPictureSelectionModel(QItemSelectionModel* pictureSelectionModel);
+    void setAlbumSelectionModel(QItemSelectionModel * albumSelectionModel);
 
-signals:
-    void pictureActivated(const QModelIndex& index);
+    void setPictureModel(ThumbnailProxyModel * pictureModel);
 
-private:
-    Ui::GalleryWidget *ui;
+    void setPictureSelectionModel(QItemSelectionModel * pictureSelectionModel);
+
+  signals:    void pictureActivated(const QModelIndex & _t1);
+
+
+  private:
+    Ui::GalleryWidget * ui;
+
 };
-
-#endif // GALLERYWIDGET_H
+#endif

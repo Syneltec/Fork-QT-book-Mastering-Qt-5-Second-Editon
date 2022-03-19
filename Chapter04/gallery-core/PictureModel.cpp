@@ -58,27 +58,18 @@ int PictureModel::rowCount(const QModelIndex& /*parent*/) const
 
 QVariant PictureModel::data(const QModelIndex& index, int role) const
 {
-    if (!isIndexValid(index)) return QVariant();
+    QVariant retVal = QVariant();
+
+    if (!isIndexValid(index)) return retVal;
 
     Picture * ppict = pPictures->at(index.row());
     switch (role)
     {
-        case Qt::DisplayRole:
-            return ppict->getFileUrl().fileName();
-            break;
-
-        case Roles::UrlRole:
-            return ppict->getFileUrl();
-            break;
-
-        case Roles::FilePathRole:
-            return ppict->getFileUrl().toLocalFile();
-            break;
-
-
-        default:
-            return QVariant();
+        case Qt::DisplayRole:       return ppict->getFileUrl().fileName();    break;
+        case Roles::UrlRole:        return ppict->getFileUrl();               break;
+        case Roles::FilePathRole:   return ppict->getFileUrl().toLocalFile(); break;
     }
+    return retVal;
 }
 
 bool PictureModel::removeRows(int row, int count, const QModelIndex& parent)
@@ -103,9 +94,9 @@ bool PictureModel::removeRows(int row, int count, const QModelIndex& parent)
 QHash<int, QByteArray> PictureModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[Qt::DisplayRole] = "name";
+    roles[Qt::DisplayRole]     = "name";
     roles[Roles::FilePathRole] = "filepath";
-    roles[Roles::UrlRole] = "url";
+    roles[Roles::UrlRole]      = "url";
     return roles;
 }
 

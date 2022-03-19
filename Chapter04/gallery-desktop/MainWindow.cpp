@@ -1,16 +1,10 @@
+
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-
-#include <QStackedWidget>
-#include <QItemSelectionModel>
-
 #include "GalleryWidget.h"
 #include "PictureWidget.h"
-#include "AlbumModel.h"
-#include "PictureModel.h"
-#include "ThumbnailProxyModel.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget * parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     mGalleryWidget(new GalleryWidget (this)),
@@ -44,17 +38,15 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(mStackedWidget);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::displayGallery()
-{
+void MainWindow::displayGallery() {
     mStackedWidget->setCurrentWidget(mGalleryWidget);
 }
 
-void MainWindow::displayPicture(const QModelIndex& /*index*/)
-{
+void MainWindow::displayPicture() {
     mStackedWidget->setCurrentWidget(mPictureWidget);
 }
+
