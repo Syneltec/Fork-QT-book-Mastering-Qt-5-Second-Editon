@@ -27,7 +27,7 @@ QImage FilterGrayscale::process(const QImage& image)
                 image.bytesPerLine());
 
     cv::Mat resultMat;
-    cv::cvtColor(tmp, resultMat, CV_BGR2GRAY);
+    cv::cvtColor(tmp, resultMat, cv::COLOR_BGR2GRAY);
 
     // cv::mat => QImage
     QImage resultImage((const uchar *) resultMat.data,
