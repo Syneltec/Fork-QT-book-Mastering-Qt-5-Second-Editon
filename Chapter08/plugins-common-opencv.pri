@@ -7,7 +7,7 @@ windows {
 
 linux {
     CONFIG += link_pkgconfig
-    PKGCONFIG += opencv
+    PKGCONFIG += opencv4
 }
 
 macx {
