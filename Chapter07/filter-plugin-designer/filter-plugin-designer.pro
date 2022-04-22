@@ -31,7 +31,7 @@ linux {
     target.path = $$(QTDIR)/../../Tools/QtCreator/lib/Qt/plugins/designer/
 
     CONFIG += link_pkgconfig
-    PKGCONFIG += opencv
+    PKGCONFIG += opencv4
 }
 
 macx {
@@ -46,6 +46,8 @@ macx {
         -lopencv_core \
         -lopencv_imgproc
 }
+
+message($$target.path)
 
 SOURCES += FilterPluginDesigner.cpp \
     FilterWidget.cpp \

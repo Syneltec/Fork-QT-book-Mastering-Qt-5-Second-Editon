@@ -1,0 +1,10 @@
+#
+.settings/*
+Makefile
+*.o
+*.so
+*.pro.user
+#
+ui_*
+moc_*
+qrc_*
